@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="zh-cmn-Hans">
+<head>
+    <meta charset='utf-8'>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
+    <meta name="viewport" content="initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no">
+    <meta name="HandheldFriendly" content="true">
+    <meta name="apple-mobile-web-app-capable" content="yes"/>
+
+    <script type="text/javascript" src="lib/jquery-2.1.4.min.js"></script>
+    <script type="text/javascript" src="component/js/jQuery.GesturePassword.js"></script>
+    <script type="text/javascript" src="component/js/password.js"></script>
+
+    <title>手势密码</title>
+
+    <style type="text/css">
+        * {
+            padding: 0;
+            margin: 0;
+        }
+        html, body {
+            background-color: #ececec;
+            height: 100%;
+        }
+        main {
+            width: 240px;
+            margin: auto;
+        }
+        header {
+            border-bottom: 1px solid grey;
+            background-color: #f9f9f9;
+            padding: 15px;
+            text-align: center;
+        }
+        header h1 {
+            font-size: 1.6em;
+            font-weight: 500;
+        }
+        .plate {
+            text-align: center;
+            padding: 60px 0;
+        }
+        .plate .message {
+            min-height: 30px;
+            margin-top: 30px;
+        }
+        .control ul {
+            list-style-type: none;
+        }
+        .control ul li:not(:first-child){
+            margin-top: 20px;
+        }
+        .control input {
+            margin-right: 15px;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>手势密码</h1>
+    </header>
+    <main>
+        <section class="plate">
+            <div id="gesture"></div>
+            <p class="message" data-password></p>
+        </section>
+        <section class="control">
+            <form>
+                <ul>
+                    <li><label><input type="radio" id="setPwd" name="gestureMode" value="set" />设置密码</label></li>
+                    <li><label><input type="radio" id="checkPwd" checked="checked" name="gestureMode" value="check" />验证密码</label></li>
+                </ul>
+            </form>
+        </section>
+    </main>
+
+    <script type="text/javascript">
+        var password = Password.createNew('tsyPwd');
+        password.init($('input:radio[name="gestureMode"]:checked').val());
+        // 使用GesturePassword的选项completeCallback来处理密码设置完成事件
+        $('#gesture').GesturePassword({
+            completeCallback: function (e, usrpwd) {
+                password.checkPassword(usrpwd);
+            }
+        });
+        // 或者自行绑定DOM对象，监听密码设置完成（complete）事件
+        //$('#gesture').on('complete.gesture', function (e, usrpwd) {
+        //    e.stopPropagation();
+        //    password.checkPassword(usrpwd);
+        //});
+
+        $('input:radio[name="gestureMode"]').change(function (e) {
+            password.init($(this).val());
+        });
+    </script>
+</body>
+</html>
