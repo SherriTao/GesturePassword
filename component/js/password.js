@@ -99,7 +99,6 @@
 				}
 			}
 			showMessage();
-			console.log(tip);
 			return password.getStatus();
 		};
 
