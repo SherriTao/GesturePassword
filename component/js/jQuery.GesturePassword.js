@@ -1,10 +1,11 @@
 /*
-**
-**
-**
+** GesturePassword - 基于jQuery开发的插件
+** 允许用户通过手指滑动的方式输入密码，并以特殊颜色进行显示，同时在手指滑动时绘出轨迹。
+** 通过选项参数，允许用户自定义圆圈的颜色及边框、圆圈选中时内圆的半径、
+** 轨迹线的样式及颜色、是否绘制轨迹线，以及手势密码组件获取到用户密码之后调用的处理函数。
 */
 ;(function ($) {
-	// 圆盘中的圆圈 - 内部类
+	// 圆盘中的圆圈
 	var Circle = function (x, y, value, selected) {
 		this.x = x;
 		this.y = y;
@@ -30,6 +31,7 @@
 			this.circleNumPerRow = 3;
 			this.circleOffset = 10;
 			this.circleRadius = (220 - this.circleOffset * 2) / (this.circleNumPerRow * 2 - 1) / 2;
+			this.settings.circleSlCtrRadius > this.circleRadius && (this.settings.circleSlCtrRadius = this.circleRadius);
 			this.circles = [];
 			this.selectCircles = [];
 			this.password = "";
@@ -47,6 +49,7 @@
 					var y = originalEvent.pageY || originalEvent.originalEvent.targetTouches[0].pageY;
 					var points = convertToCanvas({x: x, y: y});
 					var target = null;
+					// 若滑动过程中选中了圆圈且该圆圈未被选过，将该圆点加入已选择圆点列表中
 					if ((target = $this.isInCircle(points.x, points.y)) && !target.selected) {
 							target.selected = true;
 							$this.selectCircles.push(target);
@@ -80,7 +83,7 @@
 				e.stopPropagation();
 				e.data.obj.canvas.trigger(e.type);
 			});
-
+			// 坐标转换
 			var convertToCanvas = function (point) {
 				return {x: point.x - $this.canvas.offset().left, y: point.y - $this.canvas.offset().top};
 			}
@@ -197,7 +200,9 @@
 			this.ctx.clearRect(0, 0, 220, 220);
 			this.ctx.putImageData(this.initCanvas, 0, 0);
 			this.drawSelectCircles();
-			this.drawLines(point);
+			if (this.settings.isDrawLine) {
+				this.drawLines(point);
+			}
 		},
 	};
 
