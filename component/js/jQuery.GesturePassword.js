@@ -45,13 +45,13 @@
 				if ($this.istouch) {
 					var x = originalEvent.pageX || originalEvent.originalEvent.targetTouches[0].pageX;
 					var y = originalEvent.pageY || originalEvent.originalEvent.targetTouches[0].pageY;
-					[x, y] = convertToCanvas({x: x, y: y});
+					var points = convertToCanvas({x: x, y: y});
 					var target = null;
-					if ((target = $this.isInCircle(x, y)) && !target.selected) {
+					if ((target = $this.isInCircle(points.x, points.y)) && !target.selected) {
 							target.selected = true;
 							$this.selectCircles.push(target);
 					}
-					$this.repaint({x: x, y: y});
+					$this.repaint({x: points.x, y: points.y});
 				}
 			});
 			this.canvas.on('touchstart mousedown', {obj: $this}, function (e) {
@@ -82,7 +82,7 @@
 			});
 
 			var convertToCanvas = function (point) {
-				return [point.x - $this.canvas.offset().left, point.y - $this.canvas.offset().top];
+				return {x: point.x - $this.canvas.offset().left, y: point.y - $this.canvas.offset().top};
 			}
 		},
 		initDraw: function () {
